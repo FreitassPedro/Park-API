@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pedro.parkapi.web.dto.UsuarioCreatedDto;
 import com.pedro.parkapi.web.dto.UsuarioResponseDTO;
+import com.pedro.parkapi.web.dto.UsuarioSenhaDTO;
 import com.pedro.parkapi.web.dto.mapper.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,15 +46,17 @@ public class UsuarioController {
     Ao contrario do Put que altera todos os valores
     */
     @PatchMapping("{id}")
-    public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Usuario user = usuarioService.editarSenha(id, usuario.getPassword());
-        return ResponseEntity.ok().body(user);
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDTO dto) {
+        Usuario user = usuarioService.editarSenha(id, dto.senhaAtual(), dto.novaSenha(), dto.confirmaSenha());
+
+        //noContent é um código de sucesso mas que não retorna nada!
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarTodos() {
+    public ResponseEntity<List<UsuarioResponseDTO>> getAll() {
         List<Usuario> users = usuarioService.buscarTodos();
-        return ResponseEntity.ok().body(users);
+        return ResponseEntity.ok(UsuarioMapper.toListDTO(users));
 
     }
 }
