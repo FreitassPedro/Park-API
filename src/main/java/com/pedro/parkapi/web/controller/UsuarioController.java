@@ -1,7 +1,10 @@
-package com.pedro.parkapi.controller;
+package com.pedro.parkapi.web.controller;
 
 import java.util.List;
 
+import com.pedro.parkapi.web.dto.UsuarioCreatedDto;
+import com.pedro.parkapi.web.dto.UsuarioResponseDTO;
+import com.pedro.parkapi.web.dto.mapper.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +30,15 @@ public class UsuarioController {
 
 
     @PostMapping
-    public ResponseEntity<Usuario> create(@RequestBody Usuario usuario) {
-        Usuario user = usuarioService.salvar(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<UsuarioResponseDTO> create(@RequestBody UsuarioCreatedDto createdDto) {
+        Usuario user = usuarioService.salvar(UsuarioMapper.toUsuario(createdDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDTO(user));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Usuario> getById (@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDTO> getById (@PathVariable Long id) {
         Usuario user = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(UsuarioMapper.toDTO(user));
     }
 
     /*Patch pode ser usado para modificar apenas um valor
