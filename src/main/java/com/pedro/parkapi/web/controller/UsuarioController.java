@@ -27,13 +27,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> create(@Valid @RequestBody UsuarioCreateDto createdDto) {
-        Usuario user = usuarioService.salvar(UsuarioMapper.toUsuario(createdDto));
+    public ResponseEntity<UsuarioResponseDTO> create(@Valid @RequestBody UsuarioCreateDto createDto) {
+        Usuario user = usuarioService.salvar(UsuarioMapper.toUsuario(createDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDTO(user));
     }
 

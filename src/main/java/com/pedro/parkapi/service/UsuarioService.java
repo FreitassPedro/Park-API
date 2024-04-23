@@ -3,7 +3,10 @@ package com.pedro.parkapi.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.pedro.parkapi.exception.EntityNotFoundException;
+import com.pedro.parkapi.exception.PasswordInvalidException;
+import com.pedro.parkapi.exception.UsernameUniqueViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.pedro.parkapi.entity.Usuario;
@@ -17,30 +20,37 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+
+    private final UsuarioRepository usuarioRepository;
         
     @Transactional
     public Usuario salvar(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+        try {
+            return usuarioRepository.save(usuario);
+        } catch (org.springframework.dao.DataIntegrityViolationException exception) {
+            throw new UsernameUniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
+        }
     }
 
     @Transactional(readOnly = true)
     public Usuario buscarPorId(Long id) {
-       Optional<Usuario> obj = usuarioRepository.findById(id);
-       return obj.get();
+       return usuarioRepository.findById(id).orElseThrow(
+               () -> new EntityNotFoundException(String.format("Usuario id - %s não encontrado.", id))
+       );
     }
 
 
     @Transactional
     public Usuario editarSenha(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
         if (!novaSenha.equals(confirmaSenha)) {
-            throw new RuntimeException("Nova senha diferente da confirmação ");
+            throw new PasswordInvalidException("A senha nova e a de confirmação precisam ser iguais.");
         }
+
         Usuario user = buscarPorId(id);
         if(!user.getPassword().equals(senhaAtual)) {
-            throw new RuntimeException("Sua senha não confere");
+            throw new PasswordInvalidException("Sua senha não confere.");
         }
+
         user.setPassword(novaSenha);
         return user;
     }
