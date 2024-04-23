@@ -1,7 +1,7 @@
 package com.pedro.parkapi.web.dto.mapper;
 
 import com.pedro.parkapi.entity.Usuario;
-import com.pedro.parkapi.web.dto.UsuarioCreatedDto;
+import com.pedro.parkapi.web.dto.UsuarioCreateDto;
 import com.pedro.parkapi.web.dto.UsuarioResponseDTO;
 
 import org.modelmapper.ModelMapper;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class UsuarioMapper {
 
-    public static Usuario toUsuario(UsuarioCreatedDto createdDto) {
+    public static Usuario toUsuario(UsuarioCreateDto createdDto) {
         return new ModelMapper().map(createdDto, Usuario.class);
     }
 
@@ -36,4 +36,5 @@ public class UsuarioMapper {
 
 
     }
+
 }

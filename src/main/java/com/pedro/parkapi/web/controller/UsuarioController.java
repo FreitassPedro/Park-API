@@ -2,10 +2,11 @@ package com.pedro.parkapi.web.controller;
 
 import java.util.List;
 
-import com.pedro.parkapi.web.dto.UsuarioCreatedDto;
+import com.pedro.parkapi.web.dto.UsuarioCreateDto;
 import com.pedro.parkapi.web.dto.UsuarioResponseDTO;
 import com.pedro.parkapi.web.dto.UsuarioSenhaDTO;
 import com.pedro.parkapi.web.dto.mapper.UsuarioMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class UsuarioController {
 
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> create(@RequestBody UsuarioCreatedDto createdDto) {
+    public ResponseEntity<UsuarioResponseDTO> create(@Valid @RequestBody UsuarioCreateDto createdDto) {
         Usuario user = usuarioService.salvar(UsuarioMapper.toUsuario(createdDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDTO(user));
     }
@@ -46,7 +47,7 @@ public class UsuarioController {
     Ao contrario do Put que altera todos os valores
     */
     @PatchMapping("{id}")
-    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDTO dto) {
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UsuarioSenhaDTO dto) {
         Usuario user = usuarioService.editarSenha(id, dto.senhaAtual(), dto.novaSenha(), dto.confirmaSenha());
 
         //noContent é um código de sucesso mas que não retorna nada!

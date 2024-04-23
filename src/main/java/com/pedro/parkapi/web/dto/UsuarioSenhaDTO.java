@@ -1,4 +1,10 @@
 package com.pedro.parkapi.web.dto;
 
-public record UsuarioSenhaDTO(String senhaAtual, String novaSenha, String confirmaSenha) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record UsuarioSenhaDTO(
+        String senhaAtual,
+        @NotBlank @Size(min = 6) String novaSenha,
+        @NotBlank @Size(min = 6) String confirmaSenha) {
 }
