@@ -3,7 +3,6 @@ package com.pedro.parkapi.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,10 +16,10 @@ public class JwtUtils {
 
     public static final String JWT_BEARER = "Bearer ";
     public static final String JWT_AUTHORIZATION = "Authorization";
-    public static final String SECRET_KEY = "0123456789-012345678900123456789";
+    public static final String SECRET_KEY = "0123456789-0123456789-0123456789";
     public static final long EXPIRED_DAYS = 0;
     public static final long EXPIRED_HOURS = 0;
-    public static final long EXPIRED_MINUTES = 2;
+    public static final long EXPIRED_MINUTES = 5;
 
     private JwtUtils() {}
 
@@ -44,10 +43,10 @@ public class JwtUtils {
         String token = Jwts.builder()
                 .header().add("typ", "JWT")
                 .and()
-                .subject(username) //Consulta se o Usuario existe no banco
+                .subject(username)
                 .issuedAt(issuedAt)
                 .expiration(limit)
-                .signWith(generateKey(), SignatureAlgorithm.HS256)
+                .signWith(generateKey())
                 .claim("role", role)
                 .compact();
 
@@ -60,19 +59,19 @@ public class JwtUtils {
             return Jwts.parser()
                     .verifyWith(generateKey())
                     .build()
-                    .parseSignedClaims(removeBearer(token)).getPayload();
+                    .parseSignedClaims(refactorToken(token)).getPayload();
         } catch (JwtException ex) {
             log.error(String.format("Token invalido %s", ex.getMessage()));
         }
         return null;
     }
 
-    private static boolean isValidToken(String token) {
+    public static boolean isValidToken(String token) {
         try {
             Jwts.parser()
                     .verifyWith(generateKey())
                     .build()
-                    .parseSignedClaims(removeBearer(token));
+                    .parseSignedClaims(refactorToken(token));
             return true;
         } catch (JwtException ex) {
             log.error(String.format("Token invalido %s", ex.getMessage()));
@@ -86,8 +85,8 @@ public class JwtUtils {
     }
 
     //Garante formatação coorreta antes de ser verificado
-    private static String removeBearer(String token) {
-        if(!token.contains(JWT_BEARER)) {
+    private static String refactorToken(String token) {
+        if(token.contains(JWT_BEARER)) {
             return token.substring(JWT_BEARER.length());
         }
         return token;

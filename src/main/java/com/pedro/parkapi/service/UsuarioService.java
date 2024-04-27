@@ -4,6 +4,7 @@ import java.util.List;
 import com.pedro.parkapi.exception.EntityNotFoundException;
 import com.pedro.parkapi.exception.PasswordInvalidException;
 import com.pedro.parkapi.exception.UsernameUniqueViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pedro.parkapi.entity.Usuario;
@@ -17,12 +18,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UsuarioService {
 
-
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
         
     @Transactional
     public Usuario salvar(Usuario usuario) {
         try {
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             return usuarioRepository.save(usuario);
         } catch (org.springframework.dao.DataIntegrityViolationException exception) {
             throw new UsernameUniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
@@ -44,11 +46,11 @@ public class UsuarioService {
         }
 
         Usuario user = buscarPorId(id);
-        if(!user.getPassword().equals(senhaAtual)) {
+        if(passwordEncoder.matches(senhaAtual, user.getPassword())) {
             throw new PasswordInvalidException("Sua senha não confere.");
         }
 
-        user.setPassword(novaSenha);
+        user.setPassword(passwordEncoder.encode(novaSenha));
         return user;
     }
 
@@ -67,5 +69,9 @@ public class UsuarioService {
     public Usuario.Role buscarRolePorUsername(String username) {
         return usuarioRepository.findRoleByUsername(username);
 
+    }
+
+    public void deletarPorId(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }

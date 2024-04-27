@@ -24,10 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class AuthenticaoController {
+
     private final JwtUserDetailsService detailsService;
     private final AuthenticationManager authManager;
 
-    
+
     @PostMapping("/auth")
     public ResponseEntity<?> autenticar(@RequestBody @Valid UsuarioLoginDto loginDto, HttpServletRequest request) {
         log.info("Processo de autenticação pelo login {}", loginDto.getUsername());
@@ -37,8 +38,8 @@ public class AuthenticaoController {
             authManager.authenticate(authenticationToken);
 
             JwtToken token = detailsService.getTokenAuthenticated(loginDto.getUsername());
-            return ResponseEntity.ok(token);
 
+            return ResponseEntity.ok(token);
         } catch (AuthenticationException error) {
             log.error("Bad Credentials from username '{}'", loginDto.getUsername());
         }
