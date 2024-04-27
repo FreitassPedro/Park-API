@@ -1,12 +1,9 @@
 package com.pedro.parkapi.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import com.pedro.parkapi.exception.EntityNotFoundException;
 import com.pedro.parkapi.exception.PasswordInvalidException;
 import com.pedro.parkapi.exception.UsernameUniqueViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.pedro.parkapi.entity.Usuario;
@@ -58,5 +55,17 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<Usuario> buscarTodos() {
         return usuarioRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario buscarPorUsername(String username) {
+        return usuarioRepository.findByUsername(username).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Usuario com username '%s' não ecnontrado", username))
+        );
+    }
+    @Transactional(readOnly = true)
+    public Usuario.Role buscarRolePorUsername(String username) {
+        return usuarioRepository.findRoleByUsername(username);
+
     }
 }
