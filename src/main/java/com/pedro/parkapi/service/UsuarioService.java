@@ -46,7 +46,7 @@ public class UsuarioService {
         }
 
         Usuario user = buscarPorId(id);
-        if(passwordEncoder.matches(senhaAtual, user.getPassword())) {
+        if(!passwordEncoder.matches(senhaAtual, user.getPassword())) {
             throw new PasswordInvalidException("Sua senha não confere.");
         }
 
