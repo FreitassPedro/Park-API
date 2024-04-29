@@ -84,7 +84,8 @@ public class UsuarioController {
     /*Patch pode ser usado para modificar apenas um valor
     Ao contrario do Put que altera todos os valores
     */
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE') AND (#id == authentication.principal.id)")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UsuarioSenhaDTO dto) {
         Usuario user = usuarioService.editarSenha(id, dto.senhaAtual(), dto.novaSenha(), dto.confirmaSenha());
 
