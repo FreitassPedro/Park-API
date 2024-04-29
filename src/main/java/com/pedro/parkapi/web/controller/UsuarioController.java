@@ -76,11 +76,7 @@ public class UsuarioController {
             security = @SecurityRequirement(name = "security"),
             summary = "Atualizar senha", description = "Requisição exige um Bearer Token. Acesso exlcusivo a ADMIN",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Senha atualizado com sucesso.",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = Void.class))),
-                    @ApiResponse(responseCode = "404", description = "Recurso não encontrado",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "204", description = "Senha atualizado com sucesso."),
                     @ApiResponse(responseCode = "400", description = "Recursos falhou, senha não confere",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso",
@@ -92,7 +88,7 @@ public class UsuarioController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE') AND (#id == authentication.principal.id)")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UsuarioSenhaDTO dto) {
-        Usuario user = usuarioService.editarSenha(id, dto.senhaAtual(), dto.novaSenha(), dto.confirmaSenha());
+        usuarioService.editarSenha(id, dto.senhaAtual(), dto.novaSenha(), dto.confirmaSenha());
 
         //noContent é um código de sucesso mas que não retorna nada!
         return ResponseEntity.noContent().build();
