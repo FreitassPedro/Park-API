@@ -1,5 +1,6 @@
 package com.pedro.parkapi.web.exception;
 
+import com.pedro.parkapi.exception.CpfUniqueViolationException;
 import com.pedro.parkapi.exception.EntityNotFoundException;
 import com.pedro.parkapi.exception.PasswordInvalidException;
 import com.pedro.parkapi.exception.UsernameUniqueViolationException;
@@ -31,7 +32,7 @@ public class ApiExceptionHandler {
     }
 
 
-    @ExceptionHandler(UsernameUniqueViolationException.class)
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> usernameUniqueViolationException(RuntimeException exception,
                                                                         HttpServletRequest request) {
 
