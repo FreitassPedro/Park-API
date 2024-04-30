@@ -38,7 +38,7 @@ public class ClienteIT {
     }
 
     @Test
-    public void criarCliente_ComCpfJaCadastrado_RetornarErrorStatus409() {
+    public void criarCliente_ComCpfJaCadastrado_RetornarErrorMessageStatus409() {
         ErrorMessage responseBody = testClient
                 .post()
                 .uri("/api/v1/clientes")
