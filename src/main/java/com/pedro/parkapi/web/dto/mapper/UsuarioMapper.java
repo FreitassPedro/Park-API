@@ -33,8 +33,5 @@ public class UsuarioMapper {
         return usuarios.stream().map(user -> toDTO(user))
                 //Collect junta todos objetos coletado e cria outra lista
                 .collect(Collectors.toList());
-
-
     }
-
 }

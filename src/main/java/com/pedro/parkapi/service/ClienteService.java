@@ -5,29 +5,39 @@ import com.pedro.parkapi.exception.CpfUniqueViolationException;
 import com.pedro.parkapi.exception.EntityNotFoundException;
 import com.pedro.parkapi.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ClienteService {
-    private final ClienteRepository clienteRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Transactional
     public Cliente salvar(Cliente cliente) {
         try {
-          return clienteRepository.save(cliente);
+            return clienteRepository.save(cliente);
         } catch (DataIntegrityViolationException ex) {
             throw new CpfUniqueViolationException(
-                    String.format("CPF '%s' não pode ser cadastrado, já existe no sistema", cliente.getCpf()));
+                    String.format("CPF '%s' não pode ser cadastrado, já existe no sistema", cliente.getCpf())
+            );
         }
     }
 
     @Transactional(readOnly = true)
     public Cliente buscarPorId(Long id) {
         return clienteRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema.", id))
+                () -> new EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<Cliente> buscarTodos() {
+        return  clienteRepository.findAll();
     }
 }
