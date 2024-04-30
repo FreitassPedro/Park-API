@@ -12,28 +12,30 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 @Entity
-@Table(name = "clientes")
-@EntityListeners(AuditingEntityListener.class) //Pra processo de auditoria
-public class Cliente {
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "clientes") //Pra processo de auditoria
+public class Cliente implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @OneToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "nome", nullable = false, length = 100)
     private String nome;
     @Column(name = "cpf", nullable = false, unique = true, length = 11)
     private String cpf;
 
-    @OneToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
 
     //Essenciais para Auditoria
     @CreatedDate
