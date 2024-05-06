@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
-public class AuthenticaoController {
+public class AuthenticacaoController {
 
     private final JwtUserDetailsService detailsService;
     private final AuthenticationManager authManager;

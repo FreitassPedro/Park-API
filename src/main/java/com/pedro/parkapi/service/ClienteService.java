@@ -4,9 +4,12 @@ import com.pedro.parkapi.entity.Cliente;
 import com.pedro.parkapi.exception.CpfUniqueViolationException;
 import com.pedro.parkapi.exception.EntityNotFoundException;
 import com.pedro.parkapi.repository.ClienteRepository;
+import com.pedro.parkapi.repository.projections.ClienteProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +40,12 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Cliente> buscarTodos() {
-        return  clienteRepository.findAll();
+    public Page<ClienteProjection> buscarTodos(Pageable pageable) {
+        return clienteRepository.findAllPeagle(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Cliente buscarPorUsuarioId(Long id) {
+        return clienteRepository.findByUsuarioId(id);
     }
 }
