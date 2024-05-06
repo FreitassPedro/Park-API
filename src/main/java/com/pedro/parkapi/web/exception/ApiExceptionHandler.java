@@ -1,9 +1,6 @@
 package com.pedro.parkapi.web.exception;
 
-import com.pedro.parkapi.exception.CpfUniqueViolationException;
-import com.pedro.parkapi.exception.EntityNotFoundException;
-import com.pedro.parkapi.exception.PasswordInvalidException;
-import com.pedro.parkapi.exception.UsernameUniqueViolationException;
+import com.pedro.parkapi.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +29,7 @@ public class ApiExceptionHandler {
     }
 
 
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class, CodigoUniqueViolantionException.class})
     public ResponseEntity<ErrorMessage> usernameUniqueViolationException(RuntimeException exception,
                                                                         HttpServletRequest request) {
 
@@ -70,4 +67,6 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.FORBIDDEN, ex.getMessage()));
     }
+
+
 }
